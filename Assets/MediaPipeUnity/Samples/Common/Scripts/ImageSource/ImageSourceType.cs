@@ -9,5 +9,6 @@ public enum ImageSourceType
   WebCamera = 0,
   Image = 1,
   Video = 2,
-  Unknown = 3,
+  ARKit = 3,
+  Unknown = 4,
 }

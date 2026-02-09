@@ -4,7 +4,10 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -74,6 +77,9 @@ namespace Mediapipe.Unity.Sample.Holistic
     {
       var graphInitRequest = graphRunner.WaitForInit(runningMode);
       var imageSource = ImageSourceProvider.ImageSource;
+
+      // MotionHubSDK
+      imageSource.SelectSource(cameraID);
 
       yield return imageSource.Play();
 
@@ -198,6 +204,13 @@ namespace Mediapipe.Unity.Sample.Holistic
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.Get(NormalizedLandmarkList.Parser);
       _holisticAnnotationController.DrawPoseLandmarkListLater(value);
+
+      // MotionHubSDK
+      lock (ResultsLock)
+      {
+        Result.Time = DateTime.Now;
+        Result.PoseLandmarks = value?.Landmark.ToList();
+      }
     }
 
     private void OnLeftHandLandmarksOutput(object stream, OutputStream<NormalizedLandmarkList>.OutputEventArgs eventArgs)
@@ -205,6 +218,12 @@ namespace Mediapipe.Unity.Sample.Holistic
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.Get(NormalizedLandmarkList.Parser);
       _holisticAnnotationController.DrawLeftHandLandmarkListLater(value);
+
+      // MotionHubSDK
+      lock (ResultsLock)
+      {
+        Result.LeftHandLandmarks = value?.Landmark.ToList();
+      }
     }
 
     private void OnRightHandLandmarksOutput(object stream, OutputStream<NormalizedLandmarkList>.OutputEventArgs eventArgs)
@@ -212,6 +231,12 @@ namespace Mediapipe.Unity.Sample.Holistic
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.Get(NormalizedLandmarkList.Parser);
       _holisticAnnotationController.DrawRightHandLandmarkListLater(value);
+
+      // MotionHubSDK
+      lock (ResultsLock)
+      {
+        Result.RighthandLandmarks = value?.Landmark.ToList();
+      }
     }
 
     private void OnPoseWorldLandmarksOutput(object stream, OutputStream<LandmarkList>.OutputEventArgs eventArgs)
@@ -235,5 +260,18 @@ namespace Mediapipe.Unity.Sample.Holistic
       var value = packet == null ? default : packet.Get(NormalizedRect.Parser);
       _poseRoiAnnotationController.DrawLater(value);
     }
+
+        // MotionHubSDK
+    public int cameraID = 0;
+
+    public class HolisticResult
+    {
+      public DateTime Time;
+      public List<NormalizedLandmark> PoseLandmarks;
+      public List<NormalizedLandmark> LeftHandLandmarks;
+      public List<NormalizedLandmark> RighthandLandmarks;
+    }
+    public HolisticResult Result { get; private set; } = new();
+    public readonly object ResultsLock = new object();
   }
 }

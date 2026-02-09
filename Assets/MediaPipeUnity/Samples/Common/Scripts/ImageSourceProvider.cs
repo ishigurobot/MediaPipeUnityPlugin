@@ -11,6 +11,7 @@ namespace Mediapipe.Unity.Sample
     private static WebCamSource _WebCamSource;
     private static StaticImageSource _StaticImageSource;
     private static VideoSource _VideoSource;
+    private static ARKitSource _ARKitSource;
 
     public static ImageSource ImageSource { get; private set; }
 
@@ -30,15 +31,20 @@ namespace Mediapipe.Unity.Sample
         {
           return ImageSourceType.Video;
         }
+        if (ImageSource is ARKitSource)
+        {
+          return ImageSourceType.ARKit;
+        }
         return ImageSourceType.Unknown;
       }
     }
 
-    internal static void Initialize(WebCamSource webCamSource, StaticImageSource staticImageSource, VideoSource videoSource)
+    internal static void Initialize(WebCamSource webCamSource, StaticImageSource staticImageSource, VideoSource videoSource, ARKitSource arkitSource)
     {
       _WebCamSource = webCamSource;
       _StaticImageSource = staticImageSource;
       _VideoSource = videoSource;
+      _ARKitSource = arkitSource;
     }
 
     public static void Switch(ImageSourceType imageSourceType)
@@ -58,6 +64,11 @@ namespace Mediapipe.Unity.Sample
         case ImageSourceType.Video:
           {
             ImageSource = _VideoSource;
+            break;
+          }
+        case ImageSourceType.ARKit:
+          {
+            ImageSource = _ARKitSource;
             break;
           }
         case ImageSourceType.Unknown:
