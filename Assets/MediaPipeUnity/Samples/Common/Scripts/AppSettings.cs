@@ -87,5 +87,10 @@ namespace Mediapipe.Unity.Sample
     );
 
     public VideoSource BuildVideoSource() => new VideoSource(_availableVideoSources);
+
+    public ARKitSource BuildARKitSource() => new ARKitSource(
+      _preferredDefaultWebCamWidth,
+      _defaultAvailableWebCamResolutions
+    );
   }
 }

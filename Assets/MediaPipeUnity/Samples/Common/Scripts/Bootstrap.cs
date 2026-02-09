@@ -83,7 +83,7 @@ namespace Mediapipe.Unity.Sample
 
       Debug.Log("Preparing ImageSource...");
       ImageSourceProvider.Initialize(
-        _appSettings.BuildWebCamSource(), _appSettings.BuildStaticImageSource(), _appSettings.BuildVideoSource());
+        _appSettings.BuildWebCamSource(), _appSettings.BuildStaticImageSource(), _appSettings.BuildVideoSource(), _appSettings.BuildARKitSource());
       ImageSourceProvider.Switch(_appSettings.defaultImageSource);
 
       isFinished = true;

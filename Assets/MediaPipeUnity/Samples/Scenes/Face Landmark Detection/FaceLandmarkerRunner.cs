@@ -9,6 +9,12 @@ using Mediapipe.Tasks.Vision.FaceLandmarker;
 using UnityEngine;
 using UnityEngine.Rendering;
 
+using System.Threading;
+using System.Linq;
+using System.Collections.Generic;
+using Mediapipe.Tasks.Components.Containers;
+using System;
+
 namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
 {
   public class FaceLandmarkerRunner : VisionTaskApiRunner<FaceLandmarker>
@@ -16,6 +22,8 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
     [SerializeField] private FaceLandmarkerResultAnnotationController _faceLandmarkerResultAnnotationController;
 
     private Experimental.TextureFramePool _textureFramePool;
+
+    private Experimental.ImageTransformationOptions _transformationOptions;
 
     public readonly FaceLandmarkDetectionConfig config = new FaceLandmarkDetectionConfig();
 
@@ -61,10 +69,10 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
 
       SetupAnnotationController(_faceLandmarkerResultAnnotationController, imageSource);
 
-      var transformationOptions = imageSource.GetTransformationOptions();
-      var flipHorizontally = transformationOptions.flipHorizontally;
-      var flipVertically = transformationOptions.flipVertically;
-      var imageProcessingOptions = new Tasks.Vision.Core.ImageProcessingOptions(rotationDegrees: (int)transformationOptions.rotationAngle);
+      _transformationOptions = imageSource.GetTransformationOptions();
+      var flipHorizontally = _transformationOptions.flipHorizontally;
+      var flipVertically = _transformationOptions.flipVertically;
+      var imageProcessingOptions = new Tasks.Vision.Core.ImageProcessingOptions(rotationDegrees: (int)_transformationOptions.rotationAngle);
 
       AsyncGPUReadbackRequest req = default;
       var waitUntilReqDone = new WaitUntil(() => req.done);
@@ -156,6 +164,10 @@ namespace Mediapipe.Unity.Sample.FaceLandmarkDetection
     private void OnFaceLandmarkDetectionOutput(FaceLandmarkerResult result, Image image, long timestamp)
     {
       _faceLandmarkerResultAnnotationController.DrawLater(result);
+      OnFaceResultsUpdated?.Invoke(result, _transformationOptions);
     }
+
+    // MotionHubSDK
+    public event Action<FaceLandmarkerResult, Experimental.ImageTransformationOptions> OnFaceResultsUpdated;
   }
 }

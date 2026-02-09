@@ -186,7 +186,7 @@ namespace Mediapipe.Unity.Sample
 
     protected void AddPacketToInputStream<T>(string streamName, Packet<T> packet)
     {
-      calculatorGraph.AddPacketToInputStream(streamName, packet);
+      calculatorGraph?.AddPacketToInputStream(streamName, packet);
     }
 
     protected void AddTextureFrameToInputStream(string streamName, Experimental.TextureFrame textureFrame, GlContext glContext = null)
