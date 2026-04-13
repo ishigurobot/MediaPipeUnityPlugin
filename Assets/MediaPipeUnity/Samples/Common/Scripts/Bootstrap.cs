@@ -48,7 +48,7 @@ namespace Mediapipe.Unity.Sample
           }
         case AppSettings.AssetLoaderType.StreamingAssets:
           {
-            AssetLoader.Provide(new StreamingAssetsResourceManager());
+            AssetLoader.Provide(new StreamingAssetsResourceManager(_appSettings.streamingAssetsRelativePath));
             break;
           }
         case AppSettings.AssetLoaderType.Local:

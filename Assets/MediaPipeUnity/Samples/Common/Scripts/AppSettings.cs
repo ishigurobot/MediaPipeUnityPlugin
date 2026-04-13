@@ -24,6 +24,7 @@ namespace Mediapipe.Unity.Sample
     [SerializeField] private ImageSourceType _defaultImageSource;
     [SerializeField] private InferenceMode _preferableInferenceMode;
     [SerializeField] private AssetLoaderType _assetLoaderType;
+    [SerializeField] private string _streamingAssetsRelativePath;
     [SerializeField] private Logger.LogLevel _logLevel = Logger.LogLevel.Debug;
 
     [Header("Glog settings")]
@@ -66,6 +67,7 @@ namespace Mediapipe.Unity.Sample
       get => _assetLoaderType;
       set => _assetLoaderType = value;
     }
+    public string streamingAssetsRelativePath => _streamingAssetsRelativePath;
     public Logger.LogLevel logLevel => _logLevel;
 
     public void ResetGlogFlags()
